@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from blog.views import get_devops_blog
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', get_devops_blog, name='home_page')
 ]
