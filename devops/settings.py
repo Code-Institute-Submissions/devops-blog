@@ -15,6 +15,10 @@ import os
 import dj_database_url
 if os.path.isfile("env.py"):
     import env
+
+development = os.environ.get('DEVELOPMENT', False)
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,9 +30,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-6tu6c)xu@j$y)tjtpvze@x26r!#1chd6*))37!l5jsa%$&a4c&'  # noqa
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = development
 
-ALLOWED_HOSTS = ['devopsblog.herokuapp.com']
+if development:
+    ALLOWED_HOSTS = ['localhost']
+else:
+    ALLOWED_HOSTS = [os.environ.get('HEROKU_HOSTNAME')]
 
 
 # Application definition
@@ -74,17 +81,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'devops.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-DATABASES = {
+if development:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+else:
+    DATABASES = {
     'default': dj_database_url.parse('postgres://corvkplx:wCZksAljEDnfRjkBvQoBsn9VccXWE_ma@lucky.db.elephantsql.com/corvkplx')  # noqa
 }
 
